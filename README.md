@@ -50,4 +50,30 @@ pytest -q                                          # 13 tests, CPU
 python -m attnx.train --out results --device cuda  # resumable (runs.jsonl)
 ```
 
-**Results are pending** from the Colab run.
+## Results (Tesla T4, Colab)
+
+There are 6 heads of width 64 and 6 layers, trained for 3,000 steps each, which takes 3–4
+minutes per model. The table and raw rows are in [`results/`](results/).
+
+| attention | params | KV bytes/token | KV at 32k tokens | vs MHA | val bits/byte |
+|---|---|---|---|---|---|
+| MHA | 10.82M | 9,216 | 288 MiB | 1.000× | 1.253 |
+| GQA, 2 groups | 9.64M | 3,072 | 96 MiB | 0.333× | **1.254** |
+| MQA | 9.34M | 1,536 | 48 MiB | 0.167× | 1.271 |
+| MLA (d_c = 96, d_r = 32) | 10.01M | 1,536 | 48 MiB | 0.167× | 1.338 |
+
+- **GQA with 2 groups matches MHA at a third of the cache** (1.254 vs 1.253 bits/byte).
+- **MQA cuts the cache 6× and costs 0.018 bits/byte.**
+- **MLA, at the same 1,536 bytes per token as MQA, was clearly worse here** (1.338 vs
+  1.271). This does not reproduce DeepSeek-V2's claim that MLA beats MHA, and this setup
+  likely explains why:
+  - The latent is very narrow. d_c = 96 must hold the keys and values of all 6 heads,
+    which take 768 dimensions in MHA. That is an 8× compression. For comparison,
+    DeepSeek-V2 uses d_c = 512 for 128 heads of width 128.
+  - Every variant used the same learning rate (1e-3), tuned for none of them. MLA adds two
+    extra low-rank factorisations, which may want a different one.
+  - These are small models trained for 3,000 steps, from one seed each.
+
+  A fairer test would sweep d_c and the learning rate. The absorbed decode path is
+  verified exact (float64, 1e-10) either way. What is in question is the quality at this
+  compression, not the implementation.
