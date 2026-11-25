@@ -1,0 +1,4 @@
+{"kind": "mqa", "params": 9343872, "kv_bytes_per_token": 1536, "kv_mib_at_32k": 48.0, "val_bpb": 1.268549424420181, "minutes": 3.0234375953674317, "steps": 3000, "device": "Tesla T4"}
+{"kind": "mla-c64", "params": 9786240, "kv_bytes_per_token": 1152, "kv_mib_at_32k": 36.0, "val_bpb": 1.3450165914225143, "minutes": 3.8486942370732624, "steps": 3000, "device": "Tesla T4"}
+{"kind": "mla-c192", "params": 10670976, "kv_bytes_per_token": 2688, "kv_mib_at_32k": 84.0, "val_bpb": 1.2728841267473225, "minutes": 4.054934207598368, "steps": 3000, "device": "Tesla T4"}
+{"kind": "mla-c352", "params": 11776896, "kv_bytes_per_token": 4608, "kv_mib_at_32k": 144.0, "val_bpb": 1.2665963550404529, "minutes": 4.272247227032979, "steps": 3000, "device": "Tesla T4"}

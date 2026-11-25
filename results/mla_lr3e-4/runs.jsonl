@@ -1,0 +1,2 @@
+{"kind": "mqa", "params": 9343872, "kv_bytes_per_token": 1536, "kv_mib_at_32k": 48.0, "val_bpb": 1.3488430162232958, "minutes": 3.457194439570109, "steps": 3000, "device": "Tesla T4"}
+{"kind": "mla", "params": 10007424, "kv_bytes_per_token": 1536, "kv_mib_at_32k": 48.0, "val_bpb": 1.4747309758918787, "minutes": 3.8983903090159098, "steps": 3000, "device": "Tesla T4"}
