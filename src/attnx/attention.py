@@ -139,12 +139,14 @@ def make(kind: str, d: int, heads: int, **kw) -> nn.Module:
         return GQA(d, heads, 1)
     if kind.startswith("gqa"):
         return GQA(d, heads, int(kind[3:]))
-    if kind == "mla":
+    if kind == "mla" or kind.startswith("mla-c"):
+        # "mla" uses d_c = d/4; "mla-c192" sets the latent width explicitly
         hd = d // heads
+        d_c = int(kind[5:]) if kind.startswith("mla-c") else kw.get("d_c", d // 4)
         return MLA(
             d,
             heads,
-            d_c=kw.get("d_c", d // 4),
+            d_c=d_c,
             d_cq=kw.get("d_cq", d // 2),
             d_r=kw.get("d_r", hd // 2),
             head_dim=hd,
