@@ -31,6 +31,7 @@ def test_cache_sizes():
     assert make("gqa2", D, H).kv_elems_per_token() == 2 * 2 * hd
     assert make("mqa", D, H).kv_elems_per_token() == 2 * hd
     assert make("mla", D, H).kv_elems_per_token() == D // 4 + hd // 2
+    assert make("mla-c40", D, H).kv_elems_per_token() == 40 + hd // 2
 
 
 def test_gqa_with_all_heads_equals_manual_mha():
