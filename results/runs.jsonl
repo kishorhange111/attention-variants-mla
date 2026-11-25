@@ -1,0 +1,4 @@
+{"kind": "mha", "params": 10818432, "kv_bytes_per_token": 9216, "kv_mib_at_32k": 288.0, "val_bpb": 1.2526962399458645, "minutes": 3.8173036932945252, "steps": 3000, "device": "Tesla T4"}
+{"kind": "gqa2", "params": 9638784, "kv_bytes_per_token": 3072, "kv_mib_at_32k": 96.0, "val_bpb": 1.2543601677933958, "minutes": 3.3806726853052775, "steps": 3000, "device": "Tesla T4"}
+{"kind": "mqa", "params": 9343872, "kv_bytes_per_token": 1536, "kv_mib_at_32k": 48.0, "val_bpb": 1.271111617653169, "minutes": 3.2446689009666443, "steps": 3000, "device": "Tesla T4"}
+{"kind": "mla", "params": 10007424, "kv_bytes_per_token": 1536, "kv_mib_at_32k": 48.0, "val_bpb": 1.337607776603393, "minutes": 3.6722071329752604, "steps": 3000, "device": "Tesla T4"}
