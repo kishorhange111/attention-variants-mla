@@ -74,6 +74,37 @@ minutes per model. The table and raw rows are in [`results/`](results/).
     extra low-rank factorisations, which may want a different one.
   - These are small models trained for 3,000 steps, from one seed each.
 
-  A fairer test would sweep d_c and the learning rate. The absorbed decode path is
-  verified exact (float64, 1e-10) either way. What is in question is the quality at this
+  The follow-up below sweeps d_c and tries a lower learning rate. The absorbed decode path
+  is verified exact (float64, 1e-10) either way. What is in question is the quality at this
   compression, not the implementation.
+
+### Follow-up: latent width and learning rate
+
+These are the same model and steps, again on a T4, with MQA rerun as a control. MQA's
+1.269, against 1.271 in the first run, gives a rough idea of run-to-run noise. The raw rows
+are in [`results/mla_dc/`](results/mla_dc/) and [`results/mla_lr3e-4/`](results/mla_lr3e-4/).
+
+| attention | d_c | KV bytes/token | vs MHA | val bits/byte |
+|---|---|---|---|---|
+| MQA (control) | – | 1,536 | 0.167× | 1.269 |
+| MLA | 64 | 1,152 | 0.125× | 1.345 |
+| MLA (first run) | 96 | 1,536 | 0.167× | 1.338 |
+| MLA | 192 | 2,688 | 0.292× | 1.273 |
+| MLA | 352 | 4,608 | 0.500× | 1.267 |
+
+| lr | MQA | MLA (d_c = 96) | gap |
+|---|---|---|---|
+| 1e-3 | 1.271 | 1.338 | 0.067 |
+| 3e-4 | 1.349 | 1.475 | 0.126 |
+
+- **Most of MLA's deficit is latent width.** Widening d_c from 96 to 192 recovers almost all
+  of the gap: 1.273, level with MQA. Below about 100 dimensions quality is flat and poor
+  (1.345 at 64, 1.338 at 96).
+- **But here MLA never beats the grouped baselines at equal cache.**
+  - At d_c = 192 it matches MQA while caching 1.75× more.
+  - At d_c = 352 (1.267) it caches 1.5× more than GQA-2 and is still worse (1.254).
+  - On this 10M-parameter, 6-head model, GQA is the better cache/quality trade.
+  - DeepSeek-V2's result is at 128 heads, where one shared latent replaces far more
+    per-head state. This experiment is too small to test that regime.
+- **A lower learning rate does not help MLA.** At 3e-4 both get worse, and MLA's gap doubles
+  (0.126). Only one value below 1e-3 was tried, so a higher rate is untested.
